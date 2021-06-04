@@ -123,6 +123,14 @@ func (c *CertificatesController) Post() {
 	c.showCerts()
 }
 
+// @router /certificates/:key [delete]
+func (c *CertificatesController) Delete() {
+	c.TplName = "certificates.html"
+	name := c.GetString(":key")
+	lib.Delete(models.GlobalCfg.OVConfigPath, name)
+	c.showCerts()
+}
+
 func validateCertParams(cert NewCertParams) map[string]map[string]string {
 	valid := validation.Validation{}
 	b, err := valid.Valid(&cert)

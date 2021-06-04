@@ -2,7 +2,9 @@ package lib
 
 import (
 	"fmt"
+	"github.com/adamwalach/go-openvpn/server/mi"
 	"io/ioutil"
+	"os"
 	"os/exec"
 	"strings"
 	"time"
@@ -62,6 +64,40 @@ func ReadCerts(path string) ([]*Cert, error) {
 	}
 
 	return certs, nil
+}
+
+func Delete(dir string, name string) (bool, error) {
+	path := dir + "keys/index.txt"
+	text, err := ioutil.ReadFile(path)
+	if err != nil {
+		return false, err
+	}
+	index := -1
+	lines := strings.Split(trim(string(text)), "\n")
+	for i, line := range lines {
+		fields := strings.Split(trim(line), "\t")
+		if len(fields) != 6 {
+			return false,
+				fmt.Errorf("Incorrect number of lines in line: \n%s\n. Expected %d, found %d",
+					line, 6, len(fields))
+		}
+		details := parseDetails(fields[5])
+		if details.Name == name {
+			suffixs := []string{".crt", ".csr", ".key", ".conf"}
+			for _, suffix := range suffixs {
+				os.Remove(dir + "keys/" + name + suffix)
+			}
+			client := mi.NewClient(models.GlobalCfg.MINetwork, models.GlobalCfg.MIAddress)
+			client.KillSession(name)
+			index = i
+			continue
+		}
+	}
+	lines = append(lines[:index], lines[index+1:]...)
+	txt := strings.Join(lines, "\n")
+	fmt.Println(lines)
+	ioutil.WriteFile(path, []byte(txt), 0644)
+	return true, nil
 }
 
 func parseDetails(d string) *Details {

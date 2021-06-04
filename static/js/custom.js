@@ -1,4 +1,5 @@
 $.MyAPP = {};
+$.certificates = {};
 
 $.MyAPP.Disconnect = function (cname){
   console.log(cname)
@@ -9,6 +10,20 @@ $.MyAPP.Disconnect = function (cname){
     data: JSON.stringify({ "cname": cname }),
     success: function(data) {
       location.reload();
+      console.log(data);
+    },
+    error: function(a,b,c) {
+      console.log(a,b,c)
+      location.reload();
+    }
+  });
+}
+
+$.certificates.Delete = function (cname){
+  $.ajax({
+    url: "/certificates/"+cname,
+    type: 'DELETE',
+    success: function(data) {
       console.log(data);
     },
     error: function(a,b,c) {

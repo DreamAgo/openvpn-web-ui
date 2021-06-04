@@ -53,6 +53,11 @@
                     <span class="label label-warning">CN: {{ .Details.CN }}</span>
                     <span class="label label-warning">Email: {{ .Details.Email }}</span>
                   </td>
+                  <td>
+                    <a href="javascript:$.certificates.Delete('{{.Details.Name}}')"
+                       class="btn btn-xs btn-danger btn-flat"
+                       title="Disconnect">X</a>
+                  </td>
               </tr>
               {{ end }}
             {{end}}

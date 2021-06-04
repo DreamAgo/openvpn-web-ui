@@ -1,5 +1,4 @@
-dev tun
-persist-tun
+dev tap
 persist-key
 client
 resolv-retry infinite
