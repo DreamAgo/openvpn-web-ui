@@ -24,6 +24,7 @@ $.certificates.Delete = function (cname){
     url: "/certificates/"+cname,
     type: 'DELETE',
     success: function(data) {
+      location.reload();
       console.log(data);
     },
     error: function(a,b,c) {
